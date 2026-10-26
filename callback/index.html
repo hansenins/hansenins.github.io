@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tesla Fleet API OAuth Callback</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 680px; margin: 48px auto; padding: 0 20px; color: #111; line-height: 1.5; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 24px; background: #fafafa; }
+    h1 { margin-top: 0; font-size: 22px; }
+    .box { background: #fff; border: 1px solid #ccc; border-radius: 6px; padding: 12px; font-family: monospace; word-break: break-all; margin: 10px 0 14px; font-size: 14px; }
+    button { background: #111; color: #fff; border: none; border-radius: 6px; padding: 10px 16px; font-size: 14px; cursor: pointer; margin-right: 8px; }
+    button:hover { background: #333; }
+    .status { color: #0a7d32; font-weight: 600; margin-left: 8px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Tesla OAuth Callback</h1>
+    <p id="desc">Copy the authorization code or full callback URL below and paste it back into Grok Bot to complete setup.</p>
+    <div><strong>Authorization Code:</strong></div>
+    <div class="box" id="codeBox">Checking URL...</div>
+    <button onclick="copyText('codeBox', 'codeStatus')">Copy Code</button>
+    <span class="status" id="codeStatus">Copied!</span>
+    <div style="margin-top: 20px;"><strong>Full Callback URL:</strong></div>
+    <div class="box" id="urlBox"></div>
+    <button onclick="copyText('urlBox', 'urlStatus')">Copy Full URL</button>
+    <span class="status" id="urlStatus">Copied!</span>
+  </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    const err = params.get("error");
+    document.getElementById("urlBox").textContent = window.location.href;
+    if (code) {
+      document.getElementById("codeBox").textContent = code;
+    } else if (err) {
+      document.getElementById("codeBox").textContent = "Error: " + err + " (" + (params.get("error_description") || "") + ")";
+    } else {
+      document.getElementById("codeBox").textContent = "No ?code= parameter found in URL.";
+    }
+    function copyText(boxId, statusId) {
+      const text = document.getElementById(boxId).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const el = document.getElementById(statusId);
+        el.style.display = "inline";
+        setTimeout(() => { el.style.display = "none"; }, 2500);
+      });
+    }
+  </script>
+</body>
+</html>
